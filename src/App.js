@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import SurveyList from './SurveyList';
+
+class App extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      surveys: [],
+      selectedSurvey: 0
+    }
+
+    this.handleSelection = this.handleSelection.bind(this);
+  }
+  componentDidMount() {
+    fetch('https://my-json-server.typicode.com/focaldata/demo/db').then(res => res.json()).then(data => this.setState({surveys: data.surveys}))
+  }
+  handleSelection(e) {
+    this.setState({selectedSurvey: e.target.value});
+  }
+  render() {
+    const {surveys, selectedSurvey} = this.state;
+
+    return (<div className="App">
+      <div className="container">
+      <h1 className="App__title">Surveys</h1>
+        {
+          surveys.length > 0
+            ? <SurveyList surveys={surveys} selectedSurvey={selectedSurvey} handleSelection={this.handleSelection}/>
+            : <div>Loading...</div>
+        }
+      </div>
+    </div>);
+  }
 }
 
 export default App;
